@@ -52,12 +52,18 @@ const buscarTodo = async () => {
   }
 };
 
+const buscar = async () => {
+  const user = await User.findOne({username: 'Usuario de prueba'});
+  console.log('Usuario encontrado:', user);
+};  
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(async () => {
     console.log('Conectado a MongoDB Atlas');
 
     await crear();
     await buscarTodo();
+    await buscar();
 
     await mongoose.disconnect();
   })
