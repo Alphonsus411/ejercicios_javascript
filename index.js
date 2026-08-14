@@ -53,9 +53,68 @@ const buscarTodo = async () => {
 };
 
 const buscar = async () => {
-  const user = await User.findOne({username: 'Usuario de prueba'});
-  console.log('Usuario encontrado:', user);
-};  
+  try {
+    const user = await User.findOne({
+      username: 'Usuario de prueba'
+    });
+
+    if (!user) {
+      console.log('Usuario no encontrado.');
+      return;
+    }
+
+    console.log('Usuario encontrado:', user);
+
+  } catch (error) {
+    console.error('Error buscando usuario:', error);
+  }
+};
+
+const actualizar = async () => {
+  try {
+    const user = await User.findOne({
+      username: 'Usuario de prueba'
+    });
+
+    if (!user) {
+      console.log('Usuario no encontrado para actualizar.');
+      return;
+    }
+
+    console.log('Usuario antes de actualizar:', user);
+
+    user.edad = 35;
+
+    await user.save();
+
+    console.log('Usuario actualizado:', user);
+
+  } catch (error) {
+    console.error('Error actualizando usuario:', error);
+  }
+};
+
+const eliminar = async () => {
+  try {
+    const user = await User.findOne({
+      username: 'Usuario de prueba'
+    });
+
+    if (!user) {
+      console.log('Usuario no encontrado para eliminar.');
+      return;
+    }
+
+    console.log('Usuario encontrado para eliminar:', user);
+
+    await user.remove();
+
+    console.log('Usuario eliminado:', user);
+
+  } catch (error) {
+    console.error('Error eliminando usuario:', error);
+  }
+};
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(async () => {
@@ -64,6 +123,8 @@ mongoose.connect(process.env.MONGODB_URI)
     await crear();
     await buscarTodo();
     await buscar();
+    await actualizar();
+    await eliminar();
 
     await mongoose.disconnect();
   })
