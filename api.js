@@ -7,6 +7,10 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello World!')
 })
 
+app.post('/', (req, res) => {
+  res.status(201).send('Datos recibidos correctamente!')}
+)
+
 app.listen(port, '0.0.0.0', () => {
   console.log(`Servidor escuchando en http://localhost:${port}`)
 })
