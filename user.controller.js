@@ -15,6 +15,10 @@ const User = {
         });
     },
     create: async (req, res) => {
+        console.log('Request body:', req.body); // Log the request body for debugging
+        if (!req.body.name || !req.body.email) {
+            return res.status(400).send('Name and email are required');
+        }
         const user = new Users(req.body);
         await user.save();
         res.status(201).send('User created');
