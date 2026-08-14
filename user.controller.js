@@ -1,19 +1,27 @@
+const Users = require('./user')
+
 const User = {
     get: (req, res) => {
         res.status(200).send('User details');
     },
 
-    list: (req, res) => {
-        res.status(200).send('List of users');
+    list: async (req, res) => {
+        const users = await Users.find({}, (err, users) => {
+            res.status(200).send(users);
+        });
     },
-    create: (req, res) => {
+    create: async (req, res) => {
+        const user = new Users(req.body);
+        await user.save();
         res.status(201).send('User created');
     },
-    update: (req, res) => {
-        res.status(204).send('User updated');
+    update: async (req, res) => {
+        const user = await Users.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).send(user);
     },
-    destroy: (req, res) => {
-        res.status(204).send('User deleted');
+    destroy: async (req, res) => {
+        const user = await Users.findByIdAndRemove(req.params.id);
+        res.status(200).send(user);
     }
 }
 
