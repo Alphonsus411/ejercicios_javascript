@@ -2,41 +2,107 @@ require('dotenv').config();
 
 const mongoose = require('mongoose');
 
-const Users = require('./user')
+const Users = require('./user');
 
 const User = {
     get: async (req, res) => {
-        const { id } = req.params;
-        const user = await Users.findOne({ _id: id }, (err, user) => {
-            if (err) {
-                return res.status(500).send(err);
+        try {
+            const { id } = req.params;
+
+            const user = await Users.findById(id);
+
+            if (!user) {
+                return res.status(404).send('User not found');
             }
+
             res.status(200).send(user);
-        });
+
+        } catch (error) {
+            console.error(error);
+
+            res.status(500).send(error);
+        }
     },
 
     list: async (req, res) => {
-        const users = await Users.find({}, (err, users) => {
+        try {
+            const users = await Users.find({});
+
             res.status(200).send(users);
-        });
-    },
-    create: async (req, res) => {
-        console.log('Request body:', req.body); // Log the request body for debugging
-        if (!req.body.name || !req.body.email) {
-            return res.status(400).send('Name and email are required');
+
+        } catch (error) {
+            console.error(error);
+
+            res.status(500).send(error);
         }
-        const user = new Users(req.body);
-        const savedUser = await user.save();
-        res.status(201).send(savedUser._id);
     },
+
+    create: async (req, res) => {
+        try {
+            console.log('Request body:', req.body);
+
+            if (!req.body.name || !req.body.email) {
+                return res.status(400).send('Name and email are required');
+            }
+
+            const user = new Users(req.body);
+
+            const savedUser = await user.save();
+
+            res.status(201).send(savedUser._id);
+
+        } catch (error) {
+            console.error(error);
+
+            if (error.code === 11000) {
+                return res.status(409).send('Email already exists');
+            }
+
+            res.status(500).send(error);
+        }
+    },
+
     update: async (req, res) => {
-        const user = await Users.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.status(200).send(user);
+        try {
+            const { id } = req.params;
+
+            const user = await Users.findById(id);
+
+            if (!user) {
+            return res.status(404).send('User not found');
+            }
+
+            Object.assign(user, req.body);
+
+            await user.save();
+
+            res.status(200).send(`Updated user with ID: ${id}`);
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
     },
+
     destroy: async (req, res) => {
-        const user = await Users.findByIdAndRemove(req.params.id);
-        res.status(200).send(user);
+        try {
+            const { id } = req.params;
+
+            const user = await Users.findByIdAndDelete(id);
+
+            if (!user) {
+            return res.status(404).send('User not found');
+            }
+
+            res.status(200).send(user);
+
+        } catch (error) {
+            console.error(error);
+
+            res.status(500).send(error);
+        }
     }
-}
+
+};
 
 module.exports = User;
