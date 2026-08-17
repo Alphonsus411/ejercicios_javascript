@@ -19,7 +19,17 @@ const loadinitialTemplate = () => {
     body.innerHTML = template;
 }
 
-window.onload = () => {
-    loadinitialTemplate();
+const addFormListener = () => {
+    const userForm = document.getElementById('user-form');
+    userForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(userForm);  
+        const data = Object.fromEntries(formData.entries());
+        console.log(data);
+    }     
 }
 
+window.onload = () => {
+    loadinitialTemplate();
+    addFormListener();
+}
