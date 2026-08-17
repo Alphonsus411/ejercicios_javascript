@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const mongoose = require('mongoose')
 const express = require('express')
-
 const app = express()
 const user = require('./user.controller')
 const port = 3000
