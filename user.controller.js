@@ -5,8 +5,14 @@ const mongoose = require('mongoose');
 const Users = require('./user')
 
 const User = {
-    get: (req, res) => {
-        res.status(200).send('User details');
+    get: async (req, res) => {
+        const { id } = req.params;
+        const user = await Users.findOne({ _id: id }, (err, user) => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+            res.status(200).send(user);
+        });
     },
 
     list: async (req, res) => {
@@ -20,8 +26,8 @@ const User = {
             return res.status(400).send('Name and email are required');
         }
         const user = new Users(req.body);
-        await user.save();
-        res.status(201).send('User created');
+        const savedUser = await user.save();
+        res.status(201).send(savedUser._id);
     },
     update: async (req, res) => {
         const user = await Users.findByIdAndUpdate(req.params.id, req.body, { new: true });
