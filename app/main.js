@@ -40,6 +40,15 @@ const getUsers = async () => {
 
         console.log(users);
 
+        const template = user => `
+            <li>
+                ${user.name} ${user.lastname} - ${user.email} <button data-id="${user._id}" class="delete-user">Eliminar</button>
+            </li>
+        `;
+
+        const userList = document.getElementById('user-list');
+        userList.innerHTML = users.map(user => template(user)).join('');
+
     } catch (error) {
         console.error('Error obteniendo usuarios:', error);
     }
