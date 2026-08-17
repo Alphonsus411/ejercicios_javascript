@@ -10,12 +10,17 @@ mongoose.set('strictQuery', false)
 
 app.use(express.json())
 
-app.get('/', user.list)
-app.post('/', user.create)
-app.get('/:id', user.get)
-app.put('/:id', user.update)
-app.patch('/:id', user.update)
-app.delete('/:id', user.destroy)
+app.get('/users', user.list)
+app.post('/users', user.create)
+app.get('/users/:id', user.get)
+app.put('/users/:id', user.update)
+app.patch('/users/:id', user.update)
+app.delete('/users/:id', user.destroy)
+
+app.get('/', (req, res) => {
+  console.group(__dirname)
+  res.sendFile(`${__dirname}/index.html`)
+})
 
 // 404 - siempre al final de las rutas
 app.use((req, res) => {
