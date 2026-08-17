@@ -48,6 +48,16 @@ const getUsers = async () => {
 
         const userList = document.getElementById('user-list');
         userList.innerHTML = users.map(user => template(user)).join('');
+        users.forEach(user => {
+            const userNode = document.querySelector(`[data-id="${user._id}"]`);
+            userNode.onclick = async e => {
+               await fetch('/users/${user._id}', {
+                    method: 'DELETE'
+                });
+                userNode.parentNode.remove();
+                alert('Usuario eliminado correctamente');
+            } 
+        })
 
     } catch (error) {
         console.error('Error obteniendo usuarios:', error);
